@@ -1,0 +1,31 @@
+{
+  "name": "ledger-insight",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "lint": "next lint",
+    "start:dev": "vercel dev",
+    "watch:dev": "nodemon --exec 'vercel dev'",
+    "typechain": "typechain --target=ethers-v5 --out-dir=./src/contracts ./src/abis/**/*.json",
+    "postinstall": "pnpm run typechain"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/hash": "^5.7.0",
+    "@ethersproject/providers": "^5.7.0",
+    "@vercel/node": "^2.5.8",
+    "ajv": "^8.11.0",
+    "ethers": "^5.7.0"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "^10.1.0",
+    "@types/node": "18.7.9",
+    "eslint": "8.22.0",
+    "eslint-config-next": "12.2.5",
+    "nodemon": "^2.0.19",
+    "typechain": "^8.1.0",
+    "typescript": "4.7.4",
+    "vercel": "^28.1.0"
+  }
+}

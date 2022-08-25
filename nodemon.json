@@ -1,0 +1,9 @@
+{
+  "verbose": false,
+  "ignore": ["src/abis/**", "**/fixtures/**"],
+  "watch": [
+    "api/**",
+    "src/**"
+  ],
+  "ext": "ts,js,json"
+}
