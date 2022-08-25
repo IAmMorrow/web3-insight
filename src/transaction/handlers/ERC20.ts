@@ -16,7 +16,7 @@ export const handleERC20: TransactionHandler = (event) => {
         event: "Transfer",
         from: logDescription.args.from,
         to: logDescription.args.to,
-        amount: logDescription.args.amount,
+        amount: logDescription.args.value.toString(),
       });
       break;
     }
@@ -27,7 +27,7 @@ export const handleERC20: TransactionHandler = (event) => {
         event: "Approval",
         owner: logDescription.args.owner,
         operator: logDescription.args.operator,
-        amount: logDescription.args.amount,
+        amount: logDescription.args.value.toString(),
       });
       break;
     }
