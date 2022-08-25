@@ -1,4 +1,4 @@
-# ledger-insight
+# web3-insight
 
 Serverless based REST API that allow to:
 
