@@ -46,6 +46,7 @@ This endpoint will return the events of the following contract standards:
 ```json
 [
    {
+      "amount" : "2270210512631191626965",
       "contract" : "0xcafe001067cdef266afb7eb5a286dcfd277f3de5",
       "event" : "Transfer",
       "from" : "0x053A031856b23A823b71e032C92b1599Ac1cc3F2",
@@ -53,6 +54,7 @@ This endpoint will return the events of the following contract standards:
       "type" : "ERC20"
    },
    {
+      "amount" : "27549490002984547",
       "contract" : "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
       "event" : "Transfer",
       "from" : "0x458ae80894A0924Ac763C034977e330c565F1687",
@@ -60,6 +62,7 @@ This endpoint will return the events of the following contract standards:
       "type" : "ERC20"
    },
    {
+      "amount" : "46613579",
       "contract" : "0xdac17f958d2ee523a2206206994597c13d831ec7",
       "event" : "Transfer",
       "from" : "0x06da0fd433C1A5d7a4faa01111c044910A184553",
