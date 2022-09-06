@@ -16,7 +16,7 @@ export const handleERC721: TransactionHandler = (event) => {
         event: "Transfer",
         from: logDescription.args.from,
         to: logDescription.args.to,
-        tokenId: logDescription.args.tokenId,
+        tokenId: logDescription.args.tokenId.toString(),
       });
       break;
     }
@@ -26,8 +26,8 @@ export const handleERC721: TransactionHandler = (event) => {
         contract: event.contract,
         event: "Approval",
         owner: logDescription.args.owner,
-        operator: logDescription.args.operator,
-        tokenId: logDescription.args.tokenId,
+        operator: logDescription.args.approved,
+        tokenId: logDescription.args.tokenId.toString(),
       });
       break;
     }
