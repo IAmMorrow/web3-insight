@@ -1,6 +1,6 @@
 const extract = function (log, n) {
-  let lb = log.stack.peek(0);
-  let ub = log.stack.peek(1) + lb;
+  let lb = Number(log.stack.peek(0));
+  let ub = Number(log.stack.peek(1)) + lb;
   let topics = [];
   for (let i = 0; i < n; i++) {
     topics.push(log.stack.peek(2 + i).toString(16));
