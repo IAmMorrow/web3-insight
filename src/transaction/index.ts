@@ -226,7 +226,7 @@ export function generateBalanceChanges(
 
         const { inbound, outbound } =
           ERC721BalanceState[contractAddress][senderAddress];
-        if (inbound.length > 0 && outbound.length > 0) {
+        if (inbound.length > 0 || outbound.length > 0) {
           balanceChanges.push({
             type: AssetType.ERC721,
             address: senderAddress,
