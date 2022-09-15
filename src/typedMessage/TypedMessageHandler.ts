@@ -1,4 +1,4 @@
 import { EIP712TypedMessage } from "../types/EIP712"
-import { PredictedImpact } from "../types/PredictedImpact"
+import { PotentialImpact } from "../types/PotentialImpact"
 
-export type TypedMessageHandler = (typedMessage: EIP712TypedMessage) => PredictedImpact[]
+export type TypedMessageHandler = (typedMessage: EIP712TypedMessage) => PotentialImpact[]

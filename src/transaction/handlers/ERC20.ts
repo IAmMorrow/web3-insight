@@ -1,24 +1,25 @@
 import { BigNumber } from "ethers";
 import { ERC20__factory } from "../../contracts";
 import { ApprovalEventObject, TransferEventObject } from "../../contracts/ERC20";
+import { ContractType } from "../../types/ContractType";
 import { PredictedImpact } from "../../types/PredictedImpact";
 import { TransactionHandler } from "../TransactionHandler";
 
 const erc20Interface = ERC20__factory.createInterface();
 
 export type ERC20Transfer = {
-  type: "ERC20",
+  standard: ContractType.ERC20,
   contract: string,
-  event: "Transfer",
+  type: "Transfer",
   from: string,
   to: string,
   amount: string,
 }
 
 export type ERC20Approval = {
-  type: "ERC20",
+  standard: ContractType.ERC20,
   contract: string,
-  event: "Approval",
+  type: "Approval",
   owner: string,
   operator: string,
   amount: string,
@@ -36,9 +37,9 @@ export const handleERC20: TransactionHandler = (event) => {
     case "Transfer": {
       const transferEvent = logDescription.args as unknown as TransferEventObject
       predictedImpacts.push({
-        type: "ERC20",
+        standard: ContractType.ERC20,
         contract: contractAddress,
-        event: "Transfer",
+        type: "Transfer",
         from: transferEvent.from.toLowerCase(),
         to: transferEvent.to.toLowerCase(),
         amount: transferEvent.value.toString(),
@@ -48,9 +49,9 @@ export const handleERC20: TransactionHandler = (event) => {
     case "Approval": {
       const approvalEvent = logDescription.args as unknown as ApprovalEventObject
       predictedImpacts.push({
-        type: "ERC20",
+        standard: ContractType.ERC20,
         contract: contractAddress,
-        event: "Approval",
+        type: "Approval",
         owner: approvalEvent.owner.toLowerCase(),
         operator: approvalEvent.spender.toLowerCase(),
         amount: approvalEvent.value.toString(),
@@ -69,7 +70,7 @@ export type ERC20BalanceChange = {
 }
 
 export const computeERC20BalanceChange = (state: ERC20BalanceChange = {}, predictedImpact: ERC20PredictedImpact) => {
-  if (predictedImpact.event !== "Transfer") {
+  if (predictedImpact.type !== "Transfer") {
     return state;
   }
 

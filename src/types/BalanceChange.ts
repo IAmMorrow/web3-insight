@@ -17,8 +17,8 @@ export type ERC721BalanceChange = {
     type: AssetType.ERC721,
     address: string,
     contract: string,
-    received: string[],
-    sent: string[],
+    inbound: string[],
+    outbound: string[],
 }
 
 export type ERC1155BalanceChange = {

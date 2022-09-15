@@ -1,24 +1,25 @@
 import { BigNumber } from "ethers";
 import { ERC1155__factory } from "../../contracts";
 import { ApprovalForAllEventObject, TransferBatchEventObject, TransferSingleEventObject } from "../../contracts/ERC1155";
+import { ContractType } from "../../types/ContractType";
 import { PredictedImpact } from "../../types/PredictedImpact";
 import { TransactionHandler } from "../TransactionHandler";
 
 const erc1155Interface = ERC1155__factory.createInterface();
 
 export type ERC1155ApprovalForAll = {
-  type: "ERC1155",
+  standard: ContractType.ERC1155,
   contract: string,
-  event: "ApprovalForAll",
+  type: "ApprovalForAll",
   owner: string,
   operator: string,
   approved: boolean,
 }
 
 export type ERC1155TransferBatch = {
-  type: "ERC1155",
+  standard: ContractType.ERC1155,
   contract: string,
-  event: "TransferBatch",
+  type: "TransferBatch",
   operator: string,
   from: string,
   to: string,
@@ -27,9 +28,9 @@ export type ERC1155TransferBatch = {
 }
 
 export type ERC1155TransferSingle = {
-  type: "ERC1155",
+  standard: ContractType.ERC1155,
   contract: string,
-  event: "TransferSingle",
+  type: "TransferSingle",
   operator: string,
   from: string,
   to: string,
@@ -50,9 +51,9 @@ export const handleERC1155: TransactionHandler = (event) => {
       const transferBatchEvent = logDescription.args as unknown as TransferBatchEventObject
 
       predictedImpacts.push({
-        type: "ERC1155",
+        standard: ContractType.ERC1155,
         contract: contractAddress,
-        event: "TransferBatch",
+        type: "TransferBatch",
         operator: transferBatchEvent.operator.toLowerCase(),
         from: transferBatchEvent.from.toLowerCase(),
         to: transferBatchEvent.to.toLowerCase(),
@@ -65,9 +66,9 @@ export const handleERC1155: TransactionHandler = (event) => {
       const transferSingleEvent = logDescription.args as unknown as TransferSingleEventObject
 
       predictedImpacts.push({
-        type: "ERC1155",
+        standard: ContractType.ERC1155,
         contract: contractAddress,
-        event: "TransferSingle",
+        type: "TransferSingle",
         operator: transferSingleEvent.operator.toLowerCase(),
         from: transferSingleEvent.from.toLowerCase(),
         to: transferSingleEvent.to.toLowerCase(),
@@ -80,9 +81,9 @@ export const handleERC1155: TransactionHandler = (event) => {
       const approveForAllSingleEvent = logDescription.args as unknown as ApprovalForAllEventObject
 
       predictedImpacts.push({
-        type: "ERC1155",
+        standard: ContractType.ERC1155,
         contract: contractAddress,
-        event: "ApprovalForAll",
+        type: "ApprovalForAll",
         owner: approveForAllSingleEvent.account.toLowerCase(),
         operator: approveForAllSingleEvent.operator.toLowerCase(),
         approved: approveForAllSingleEvent.approved,
@@ -101,7 +102,7 @@ export type ERC1155BalanceChange = {
 }
 
 export const computeERC1155BalanceChange = (state: ERC1155BalanceChange = {}, predictedImpact: ERC1155PredictedImpact) => {
-  if (predictedImpact.event === "ApprovalForAll") {
+  if (predictedImpact.type === "ApprovalForAll") {
     return state;
   }
 
@@ -117,7 +118,7 @@ export const computeERC1155BalanceChange = (state: ERC1155BalanceChange = {}, pr
     state[predictedImpact.contract][predictedImpact.to] = {}
   }
 
-  if (predictedImpact.event === "TransferBatch") {
+  if (predictedImpact.type === "TransferBatch") {
     for (let i = 0; i < predictedImpact.ids.length; i++) {
       const typeId = predictedImpact.ids[i];
       const amount = predictedImpact.amounts[i];
@@ -135,7 +136,7 @@ export const computeERC1155BalanceChange = (state: ERC1155BalanceChange = {}, pr
     }
   }
 
-  if (predictedImpact.event === "TransferSingle") {
+  if (predictedImpact.type === "TransferSingle") {
     const typeId = predictedImpact.id;
     const amount = predictedImpact.amount;
 

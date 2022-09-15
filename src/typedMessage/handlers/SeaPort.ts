@@ -1,5 +1,5 @@
 import { AssetType } from "../../types/Asset";
-import { PredictedImpact } from "../../types/PredictedImpact";
+import { PotentialImpact } from "../../types/PotentialImpact";
 import { TypedMessageHandler } from "../TypedMessageHandler";
 
 type SeaPortOrderOffer = {
@@ -10,14 +10,14 @@ type SeaPortOrderOffer = {
 }
 
 export type SeaPortOrder = {
-    type: "SeaPort",
-    action: "Order",
+    standard: "SeaPort",
+    type: "Order",
     contract: string,
     offer: SeaPortOrderOffer[],
 }
 
 export const handleSeaPort: TypedMessageHandler = (typedMessage) => {
-    const predictedImpacts: PredictedImpact[] = [];
+    const potentialImpacts: PotentialImpact[] = [];
 
     const {
         domain,
@@ -29,5 +29,5 @@ export const handleSeaPort: TypedMessageHandler = (typedMessage) => {
 
     }
 
-    return predictedImpacts;
+    return potentialImpacts;
 }
