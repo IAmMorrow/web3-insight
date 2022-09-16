@@ -1,4 +1,5 @@
 import { type } from "os";
+import { PotentialImpact } from "../../types/PotentialImpact";
 import { PredictedImpact } from "../../types/PredictedImpact";
 import { TypedMessageHandler } from "../TypedMessageHandler";
 
@@ -11,7 +12,7 @@ type EIP2612Values = {
 }
 
 export const handleEIP2612: TypedMessageHandler = (typedMessage) => {
-    const predictedImpacts: PredictedImpact[] = [];
+    const potentialImpacts: PotentialImpact[] = [];
 
     const {
         domain,
@@ -23,9 +24,9 @@ export const handleEIP2612: TypedMessageHandler = (typedMessage) => {
         const permitValues = message as EIP2612Values;
 
         if (permitValues.deadline && permitValues.nonce && permitValues.owner && permitValues.spender && permitValues.value) {
-            predictedImpacts.push({
-                type: "ERC20",
-                action: "Permit",
+            potentialImpacts.push({
+                standard: "ERC20",
+                type: "Permit",
                 contract: domain.verifyingContract,
                 owner: permitValues.owner,
                 operator: permitValues.spender,
@@ -35,5 +36,5 @@ export const handleEIP2612: TypedMessageHandler = (typedMessage) => {
         }
     }
 
-    return predictedImpacts;
+    return potentialImpacts;
 }

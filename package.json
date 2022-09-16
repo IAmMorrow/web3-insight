@@ -16,6 +16,7 @@
     "@ethersproject/providers": "^5.7.0",
     "@vercel/node": "^2.5.8",
     "ajv": "^8.11.0",
+    "axios": "^0.27.2",
     "ethers": "^5.7.0"
   },
   "devDependencies": {

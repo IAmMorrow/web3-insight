@@ -5,6 +5,7 @@ import { TypedMessageHandler } from "./TypedMessageHandler";
 // handlers
 import { handleEIP2612 } from "./handlers/EIP2612";
 import { handleSeaPort } from "./handlers/SeaPort";
+import { PotentialImpact } from "../types/PotentialImpact";
 
 
 const handlers: TypedMessageHandler[] = [
@@ -12,17 +13,17 @@ const handlers: TypedMessageHandler[] = [
     handleSeaPort,
 ]
 
-export function getPredictedImpactForTypedMessage(typedMessage: EIP712TypedMessage) {
-    const predictedImpacts: PredictedImpact[] = [];
+export function getPotentialImpactForTypedMessage(typedMessage: EIP712TypedMessage) {
+    const potentialImpacts: PotentialImpact[] = [];
 
     for (let i = 0; i < handlers.length; i++) {
         const currentHandler = handlers[i];
         const impacts = currentHandler(typedMessage);
 
         if (impacts.length) {
-            predictedImpacts.push(...impacts)
+            potentialImpacts.push(...impacts)
         }
     }
 
-    return predictedImpacts;
+    return potentialImpacts;
 }
