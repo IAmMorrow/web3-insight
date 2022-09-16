@@ -15,31 +15,40 @@ import { ContractMetadata } from "../../../src/types/ContractType";
 import { PredictedImpact } from "../../../src/types/PredictedImpact";
 
 type CheckTransactionParams = {
-  includeEvents: boolean,
-  includeContracts: boolean,
+  includeEvents: boolean;
+  includeContracts: boolean;
   transaction: Transaction;
   rawtx: string;
 };
 
 type CheckTransactionResult = {
-  success: boolean,
+  success: boolean;
   events?: PredictedImpact[];
   balanceChanges?: BalanceChange[];
   contracts?: ContractMetadata[];
-  error?: string,
-  gasUsed?: number,
+  error?: string;
+  gasUsed?: number;
 };
 
 export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
-  const { transaction, includeContracts, includeEvents } = request.body as CheckTransactionParams;
+  if (request.method === "OPTIONS") {
+    return response.status(200).json({
+      body: "OK",
+    });
+  }
+
+  const { transaction, includeContracts, includeEvents } =
+    request.body as CheckTransactionParams;
 
   try {
-    const { events, calls, gas_used, success, error } = await dryRun(transaction);
+    const { events, calls, gas_used, success, error } = await dryRun(
+      transaction
+    );
 
-    console.log(events.length, calls.length, gas_used, error)
+    console.log(events.length, calls.length, gas_used, error);
 
     if (!success) {
       return response.status(200).send({
@@ -73,14 +82,16 @@ export default async function handler(
       })
       .flat();
 
-    const callPredictedImpacts = calls.map((call) => {
-      return handleNATIVE(call)
-    }).flat()
+    const callPredictedImpacts = calls
+      .map((call) => {
+        return handleNATIVE(call);
+      })
+      .flat();
 
     const predictedImpacts = [
       ...eventPredictedImpacts,
       ...callPredictedImpacts,
-    ]
+    ];
 
     const balanceChanges = generateBalanceChanges(
       transaction,
