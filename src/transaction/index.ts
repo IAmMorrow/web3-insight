@@ -28,7 +28,7 @@ import { probeContract } from "../contractProber";
 import { getTracerFunc } from "../tracer";
 import { BalanceChange } from "../types/BalanceChange";
 import { AssetType } from "../types/Asset";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   computeNATIVEBalanceChange,
   NATIVEBalanceChange,
@@ -83,12 +83,24 @@ export async function getTransactionEvents(transaction: Transaction) {
 }
 
 export async function dryRun(transaction: Transaction) {
-  const { data } = await axios.post<DryRunResult>(
-    "http://explorers.api-01.live.ledger-stg.com/blockchain/v4/eth/transactions/dryrun?raw=true",
-    transaction
-  );
-
-  return data;
+  try {
+    const { data } = await axios.post<DryRunResult>(
+      "http://explorers.api-01.live.ledger-stg.com/blockchain/v4/eth/transactions/dryrun?raw=true",
+      transaction
+    );
+    return data;
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      return {
+        success: false,
+        error: error.response.data,
+        gas_used: 0,
+        events: [],
+        calls: [],      
+      }
+    }
+    throw error;
+  }
 }
 
 async function probeContracts(contractAddresses: string[]) {

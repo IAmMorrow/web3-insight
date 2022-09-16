@@ -34,6 +34,8 @@ export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
+  response.setHeader('Access-Control-Allow-Origin', '*')
+
   const { transaction, includeContracts, includeEvents } = request.body as CheckTransactionParams;
 
   try {
@@ -113,6 +115,7 @@ export default async function handler(
     return response.status(200).json(result);
   } catch (error) {
     console.error("error: ", error);
+
     if (error instanceof Error) {
       return response.status(500).send(error);
     }
