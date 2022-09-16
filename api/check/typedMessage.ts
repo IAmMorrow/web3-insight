@@ -13,7 +13,6 @@ type CheckTypedMessageParams = {
 }
 
 export default function handler(request: VercelRequest, response: VercelResponse) {
-    response.setHeader('Access-Control-Allow-Origin', '*')
     const { address, typedData } = request.body as CheckTypedMessageParams;
 
     try {
