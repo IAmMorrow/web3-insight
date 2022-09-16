@@ -23,8 +23,8 @@ import {
   handleERC721,
 } from "./handlers/ERC721";
 import { ContractType } from "../types/ContractType";
-import { BigNumber, ethers, Transaction } from "ethers";
-import { getContractMetadata, probeContract } from "../contractProber";
+import { ethers, Transaction } from "ethers";
+import { probeContract } from "../contractProber";
 import { getTracerFunc } from "../tracer";
 import { BalanceChange } from "../types/BalanceChange";
 import { AssetType } from "../types/Asset";
