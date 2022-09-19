@@ -84,10 +84,12 @@ export async function getTransactionEvents(transaction: Transaction) {
 
 export async function dryRun(transaction: Transaction) {
   try {
+    console.log({transaction})
     const { data } = await axios.post<DryRunResult>(
       "http://explorers.api-01.live.ledger-stg.com/blockchain/v4/eth/transactions/dryrun?raw=true",
       transaction
     );
+    console.log({ data })
     return data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {

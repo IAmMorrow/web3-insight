@@ -49,7 +49,7 @@ export async function getContractMetadata(
     case ContractType.ERC20: {
       const erc20Contract = ERC20__factory.connect(address, provider);
 
-      const [symbol, name, decimals] = await Promise.all([
+      const [symbol, name, decimals] = await Promise.allSettled([
         erc20Contract.symbol(),
         erc20Contract.name(),
         erc20Contract.decimals(),
@@ -58,15 +58,15 @@ export async function getContractMetadata(
       return {
         type: ContractType.ERC20,
         address,
-        symbol,
-        name,
-        decimals,
+        symbol: symbol.status === "fulfilled" ? symbol.value : undefined,
+        name: name.status === "fulfilled" ? name.value : undefined,
+        decimals: decimals.status === "fulfilled" ? decimals.value: undefined,
       };
     }
     case ContractType.ERC721: {
       const erc721Contract = ERC721__factory.connect(address, provider);
 
-      const [symbol, name] = await Promise.all([
+      const [symbol, name] = await Promise.allSettled([
         erc721Contract.symbol(),
         erc721Contract.name(),
       ]);
@@ -74,8 +74,8 @@ export async function getContractMetadata(
       return {
         type: ContractType.ERC721,
         address,
-        symbol,
-        name,
+        symbol: symbol.status === "fulfilled" ? symbol.value : undefined,
+        name: name.status === "fulfilled" ? name.value : undefined,
       };
     }
     case ContractType.ERC1155: {

@@ -48,16 +48,12 @@ export default async function handler(
       transaction
     );
 
-    console.log(events.length, calls.length, gas_used, error);
-
     if (!success) {
       return response.status(200).send({
         success,
         error,
       });
     }
-
-    console.log("Event count: ", events.length);
 
     const uniqueContractAddresses = getUniqueAddresses(
       events.map((event) => event.contract)
@@ -69,7 +65,6 @@ export default async function handler(
     const eventPredictedImpacts = events
       .map((event) => {
         const contractType = contractTypeRegistry[event.contract];
-        console.log("probed: ", event.contract, " for type: ", contractType);
         if (!contractType) {
           throw new Error(
             `No contract type in found in registry for ${event.contract}`

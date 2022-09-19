@@ -9,16 +9,16 @@ export enum ContractType {
 export type ERC20MetaData = {
     type: ContractType.ERC20,
     address: string,
-    symbol: string,
-    name: string,
-    decimals: number,
+    symbol?: string,
+    name?: string,
+    decimals?: number,
 }
 
 export type ERC721MetaData = {
     type: ContractType.ERC721,
     address: string,
-    symbol: string,
-    name: string,
+    symbol?: string,
+    name?: string,
 }
 
 export type ERC1155MetaData = {
