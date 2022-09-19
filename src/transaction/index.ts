@@ -236,15 +236,31 @@ export function generateBalanceChanges(
       for (let j = 0; j < senderAdresses.length; j++) {
         const senderAddress = senderAdresses[j];
 
-        const { inbound, outbound } =
-          ERC721BalanceState[contractAddress][senderAddress];
-        if (inbound.length > 0 || outbound.length > 0) {
+        const typeIds = Object.keys(
+          ERC721BalanceState[contractAddress][senderAddress]
+        );
+        const deltas = typeIds.reduce(
+          (acc: { id: string; delta: string }[], typeId) => {
+            const delta =
+            ERC721BalanceState[contractAddress][senderAddress][typeId];
+
+            if (!delta.isZero()) {
+              acc.push({
+                id: typeId,
+                delta: delta.toString(),
+              });
+            }
+            return acc;
+          },
+          []
+        );
+
+        if (deltas.length > 0) {
           balanceChanges.push({
             type: AssetType.ERC721,
             address: senderAddress,
             contract: contractAddress,
-            outbound,
-            inbound,
+            deltas,
           });
         }
       }
@@ -266,7 +282,7 @@ export function generateBalanceChanges(
         const typeIds = Object.keys(
           ERC1155BalanceState[contractAddress][senderAddress]
         );
-        const amounts = typeIds.reduce(
+        const deltas = typeIds.reduce(
           (acc: { id: string; delta: string }[], typeId) => {
             const delta =
               ERC1155BalanceState[contractAddress][senderAddress][typeId];
@@ -282,12 +298,12 @@ export function generateBalanceChanges(
           []
         );
 
-        if (amounts.length > 0) {
+        if (deltas.length > 0) {
           balanceChanges.push({
             type: AssetType.ERC1155,
             address: senderAddress,
             contract: contractAddress,
-            amounts,
+            deltas,
           });
         }
       }

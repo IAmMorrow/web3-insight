@@ -86,10 +86,7 @@ export const handleERC721: TransactionHandler = (event) => {
 
 export type ERC721BalanceChange = {
   [contractAddress: string]: {
-    [ownerAddress: string]: {
-      inbound: string[],
-      outbound: string[]
-    }
+    [ownerAddress: string]: {[id: string]: BigNumber}
   }
 }
 
@@ -103,22 +100,26 @@ export const computeERC712BalanceChange = (state: ERC721BalanceChange = {}, pred
   }
 
   if (!state[predictedImpact.contract][predictedImpact.from]) {
-    state[predictedImpact.contract][predictedImpact.from] = {
-      inbound: [],
-      outbound: [],
-    }
+    state[predictedImpact.contract][predictedImpact.from] = {}
   }
-
-  state[predictedImpact.contract][predictedImpact.from].outbound.push(predictedImpact.tokenId)
 
   if (!state[predictedImpact.contract][predictedImpact.to]) {
-    state[predictedImpact.contract][predictedImpact.to] = {
-      inbound: [],
-      outbound: [],
-    }
+    state[predictedImpact.contract][predictedImpact.to] = {}
   }
 
-  state[predictedImpact.contract][predictedImpact.to].inbound.push(predictedImpact.tokenId)
+  const tokenId = predictedImpact.tokenId;
+  const amount = BigNumber.from(1);
+
+  if (!state[predictedImpact.contract][predictedImpact.from][tokenId]) {
+    state[predictedImpact.contract][predictedImpact.from][tokenId] = BigNumber.from(0);
+  }
+
+  if (!state[predictedImpact.contract][predictedImpact.to][tokenId]) {
+    state[predictedImpact.contract][predictedImpact.to][tokenId] = BigNumber.from(0);
+  }
+
+  state[predictedImpact.contract][predictedImpact.from][tokenId] = state[predictedImpact.contract][predictedImpact.from][tokenId].sub(amount)
+  state[predictedImpact.contract][predictedImpact.to][tokenId] = state[predictedImpact.contract][predictedImpact.to][tokenId].add(amount)
 
   return state;
 }

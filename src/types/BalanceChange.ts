@@ -13,22 +13,23 @@ export type NativeBalanceChange = {
     delta: string,    
 }
 
+type NFTAmount = {
+    id: string,
+    delta: string,
+}
+
 export type ERC721BalanceChange = {
     type: AssetType.ERC721,
     address: string,
     contract: string,
-    inbound: string[],
-    outbound: string[],
+    deltas: NFTAmount[],
 }
 
 export type ERC1155BalanceChange = {
+    type: AssetType.ERC1155,
     address: string,
     contract: string,
-    type: AssetType.ERC1155,
-    amounts: {
-        id: string,
-        delta: string,
-    }[]
+    deltas: NFTAmount[],
 }
 
 export type BalanceChange =
