@@ -26,7 +26,7 @@ import { ContractType } from "../types/ContractType";
 import { ethers, Transaction } from "ethers";
 import { probeContract } from "../contractProber";
 import { getTracerFunc } from "../tracer";
-import { BalanceChange } from "../types/BalanceChange";
+import { BalanceChange, NFTDelta } from "../types/BalanceChange";
 import { AssetType } from "../types/Asset";
 import axios, { AxiosError } from "axios";
 import {
@@ -53,8 +53,6 @@ export function getPredictedImpactForEvent(
       event.topics = event.topics.map((topic) =>
         ethers.utils.hexZeroPad(topic, 32)
       );
-
-      console.log(event);
 
       const impacts = handler(event);
 
@@ -84,12 +82,10 @@ export async function getTransactionEvents(transaction: Transaction) {
 
 export async function dryRun(transaction: Transaction) {
   try {
-    console.log({transaction})
     const { data } = await axios.post<DryRunResult>(
       "http://explorers.api-01.live.ledger-stg.com/blockchain/v4/eth/transactions/dryrun?raw=true",
       transaction
     );
-    console.log({ data })
     return data;
   } catch (error) {
     if (error instanceof AxiosError && error.response) {
@@ -242,14 +238,14 @@ export function generateBalanceChanges(
           ERC721BalanceState[contractAddress][senderAddress]
         );
         const deltas = typeIds.reduce(
-          (acc: { id: string; delta: string }[], typeId) => {
+          (acc: NFTDelta[], typeId) => {
             const delta =
             ERC721BalanceState[contractAddress][senderAddress][typeId];
 
             if (!delta.isZero()) {
               acc.push({
                 id: typeId,
-                delta: delta.toString(),
+                value: delta.toString(),
               });
             }
             return acc;
@@ -285,14 +281,14 @@ export function generateBalanceChanges(
           ERC1155BalanceState[contractAddress][senderAddress]
         );
         const deltas = typeIds.reduce(
-          (acc: { id: string; delta: string }[], typeId) => {
+          (acc: NFTDelta[], typeId) => {
             const delta =
               ERC1155BalanceState[contractAddress][senderAddress][typeId];
 
             if (!delta.isZero()) {
               acc.push({
                 id: typeId,
-                delta: delta.toString(),
+                value: delta.toString(),
               });
             }
             return acc;

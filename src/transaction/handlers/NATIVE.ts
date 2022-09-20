@@ -17,8 +17,6 @@ export const handleNATIVE = (call: TracerCall) => {
 
   const value = BigNumber.from(call.value);
 
-  console.log(call)
-
   if (!value.isZero()) {
     predictedImpacts.push({
       standard: ContractType.NATIVE,
