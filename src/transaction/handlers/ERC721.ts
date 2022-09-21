@@ -99,27 +99,33 @@ export const computeERC712BalanceChange = (state: ERC721BalanceChange = {}, pred
     state[predictedImpact.contract] = {}
   }
 
-  if (!state[predictedImpact.contract][predictedImpact.from]) {
-    state[predictedImpact.contract][predictedImpact.from] = {}
+  const contractState = state[predictedImpact.contract];
+
+  if (!contractState[predictedImpact.from]) {
+    contractState[predictedImpact.from] = {}
   }
 
-  if (!state[predictedImpact.contract][predictedImpact.to]) {
-    state[predictedImpact.contract][predictedImpact.to] = {}
+  const contractStateFrom = contractState[predictedImpact.from];
+
+  if (!contractState[predictedImpact.to]) {
+    contractState[predictedImpact.to] = {}
   }
+
+  const contractStateTo = contractState[predictedImpact.to];
 
   const tokenId = predictedImpact.tokenId;
   const amount = BigNumber.from(1);
 
-  if (!state[predictedImpact.contract][predictedImpact.from][tokenId]) {
-    state[predictedImpact.contract][predictedImpact.from][tokenId] = BigNumber.from(0);
+  if (!contractStateFrom[tokenId]) {
+    contractStateFrom[tokenId] = BigNumber.from(0);
   }
 
-  if (!state[predictedImpact.contract][predictedImpact.to][tokenId]) {
-    state[predictedImpact.contract][predictedImpact.to][tokenId] = BigNumber.from(0);
+  if (!contractStateTo[tokenId]) {
+    contractStateTo[tokenId] = BigNumber.from(0);
   }
 
-  state[predictedImpact.contract][predictedImpact.from][tokenId] = state[predictedImpact.contract][predictedImpact.from][tokenId].sub(amount)
-  state[predictedImpact.contract][predictedImpact.to][tokenId] = state[predictedImpact.contract][predictedImpact.to][tokenId].add(amount)
+  contractStateFrom[tokenId] = contractStateFrom[tokenId].sub(amount)
+  contractStateTo[tokenId] = contractStateTo[tokenId].add(amount)
 
   return state;
 }

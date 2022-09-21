@@ -110,29 +110,35 @@ export const computeERC1155BalanceChange = (state: ERC1155BalanceChange = {}, pr
     state[predictedImpact.contract] = {}
   }
 
-  if (!state[predictedImpact.contract][predictedImpact.from]) {
-    state[predictedImpact.contract][predictedImpact.from] = {}
+  const contractState = state[predictedImpact.contract];
+
+  if (!contractState[predictedImpact.from]) {
+    contractState[predictedImpact.from] = {}
   }
 
-  if (!state[predictedImpact.contract][predictedImpact.to]) {
-    state[predictedImpact.contract][predictedImpact.to] = {}
+  const contractStateFrom = contractState[predictedImpact.from];
+
+  if (!contractState[predictedImpact.to]) {
+    contractState[predictedImpact.to] = {}
   }
+
+  const contractStateTo = contractState[predictedImpact.to];
 
   if (predictedImpact.type === "TransferBatch") {
     for (let i = 0; i < predictedImpact.ids.length; i++) {
       const typeId = predictedImpact.ids[i];
       const amount = predictedImpact.amounts[i];
 
-      if (!state[predictedImpact.contract][predictedImpact.from][typeId]) {
-        state[predictedImpact.contract][predictedImpact.from][typeId] = BigNumber.from(0);
+      if (!contractStateFrom[typeId]) {
+        contractStateFrom[typeId] = BigNumber.from(0);
       }
  
-      if (!state[predictedImpact.contract][predictedImpact.to][typeId]) {
-        state[predictedImpact.contract][predictedImpact.to][typeId] = BigNumber.from(0);
+      if (!contractStateTo[typeId]) {
+        contractStateTo[typeId] = BigNumber.from(0);
       }
 
-      state[predictedImpact.contract][predictedImpact.from][typeId] = state[predictedImpact.contract][predictedImpact.from][typeId].sub(amount)
-      state[predictedImpact.contract][predictedImpact.to][typeId] = state[predictedImpact.contract][predictedImpact.to][typeId].add(amount)
+      contractStateFrom[typeId] = contractStateFrom[typeId].sub(amount)
+      contractStateTo[typeId] = contractStateTo[typeId].add(amount)
     }
   }
 
@@ -140,16 +146,16 @@ export const computeERC1155BalanceChange = (state: ERC1155BalanceChange = {}, pr
     const typeId = predictedImpact.id;
     const amount = predictedImpact.amount;
 
-    if (!state[predictedImpact.contract][predictedImpact.from][typeId]) {
-      state[predictedImpact.contract][predictedImpact.from][typeId] = BigNumber.from(0);
+    if (!contractStateFrom[typeId]) {
+      contractStateFrom[typeId] = BigNumber.from(0);
     }
 
-    if (!state[predictedImpact.contract][predictedImpact.to][typeId]) {
-      state[predictedImpact.contract][predictedImpact.to][typeId] = BigNumber.from(0);
+    if (!contractStateTo[typeId]) {
+      contractStateTo[typeId] = BigNumber.from(0);
     }
 
-    state[predictedImpact.contract][predictedImpact.from][typeId] = state[predictedImpact.contract][predictedImpact.from][typeId].sub(amount)
-    state[predictedImpact.contract][predictedImpact.to][typeId] = state[predictedImpact.contract][predictedImpact.to][typeId].add(amount)
+    contractStateFrom[typeId] = contractStateFrom[typeId].sub(amount)
+    contractStateTo[typeId] = state[predictedImpact.contract][predictedImpact.to][typeId].add(amount)
   }
 
   return state;

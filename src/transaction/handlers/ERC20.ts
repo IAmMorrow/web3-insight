@@ -78,15 +78,17 @@ export const computeERC20BalanceChange = (state: ERC20BalanceChange = {}, predic
     state[predictedImpact.contract] = {}
   }
 
-  if (!state[predictedImpact.contract][predictedImpact.from]) {
-    state[predictedImpact.contract][predictedImpact.from] = BigNumber.from(0);
-  }
-  state[predictedImpact.contract][predictedImpact.from] = state[predictedImpact.contract][predictedImpact.from].sub(predictedImpact.amount)
+  const contractState = state[predictedImpact.contract];
 
-  if (!state[predictedImpact.contract][predictedImpact.to]) {
-    state[predictedImpact.contract][predictedImpact.to] = BigNumber.from(0);
+  if (!contractState[predictedImpact.from]) {
+    contractState[predictedImpact.from] = BigNumber.from(0);
   }
-  state[predictedImpact.contract][predictedImpact.to] = state[predictedImpact.contract][predictedImpact.to].add(predictedImpact.amount)
+  contractState[predictedImpact.from] = contractState[predictedImpact.from].sub(predictedImpact.amount)
+
+  if (!contractState[predictedImpact.to]) {
+    contractState[predictedImpact.to] = BigNumber.from(0);
+  }
+  contractState[predictedImpact.to] = contractState[predictedImpact.to].add(predictedImpact.amount)
 
   return state;
 }
