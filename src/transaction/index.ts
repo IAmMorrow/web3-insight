@@ -83,7 +83,7 @@ export async function getTransactionEvents(transaction: Transaction) {
 export async function dryRun(transaction: Transaction) {
   try {
     const { data } = await axios.post<DryRunResult>(
-      "http://explorers.api-01.live.ledger-stg.com/blockchain/v4/eth/transactions/dryrun?raw=true",
+      "http://explorers.api-01.live.ledger-stg.com/blockchain/v4/eth/tx/dryrun?raw=true",
       transaction
     );
     return data;
