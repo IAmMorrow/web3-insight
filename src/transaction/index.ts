@@ -81,7 +81,7 @@ export async function getTransactionEvents(transaction: Transaction) {
 }
 
 export async function dryRun(transaction: Transaction) {
-  if (process.env.EXPLORER_URL) {
+  if (!process.env.EXPLORER_URL) {
     throw new Error("env EXPLORER_URL not defined");
   }
   
