@@ -81,9 +81,13 @@ export async function getTransactionEvents(transaction: Transaction) {
 }
 
 export async function dryRun(transaction: Transaction) {
+  if (process.env.EXPLORER_URL) {
+    throw new Error("env EXPLORER_URL not defined");
+  }
+  
   try {
     const { data } = await axios.post<DryRunResult>(
-      "http://explorers.api-01.live.ledger-stg.com/blockchain/v4/eth/tx/dryrun?raw=true",
+      process.env.EXPLORER_URL,
       transaction
     );
     return data;
