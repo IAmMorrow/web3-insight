@@ -89,7 +89,6 @@ export default async function handler(
     ];
 
     const balanceChanges = generateBalanceChanges(
-      transaction,
       predictedImpacts
     );
 

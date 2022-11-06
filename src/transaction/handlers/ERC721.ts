@@ -1,4 +1,4 @@
-import { BigNumber, Contract } from "ethers";
+import { BigNumber, Contract, ethers } from "ethers";
 import { ERC721__factory } from "../../contracts";
 import { ApprovalEventObject, ApprovalForAllEventObject, TransferEventObject } from "../../contracts/ERC721";
 import { ContractType } from "../../types/ContractType";
@@ -100,32 +100,29 @@ export const computeERC712BalanceChange = (state: ERC721BalanceChange = {}, pred
   }
 
   const contractState = state[predictedImpact.contract];
+  const tokenId = predictedImpact.tokenId;
+  const amount = BigNumber.from(1);
 
+  if (predictedImpact.from === ethers.constants.AddressZero) {
+    
+  }
   if (!contractState[predictedImpact.from]) {
     contractState[predictedImpact.from] = {}
   }
-
   const contractStateFrom = contractState[predictedImpact.from];
+  if (!contractStateFrom[tokenId]) {
+    contractStateFrom[tokenId] = BigNumber.from(0);
+  }
+  contractStateFrom[tokenId] = contractStateFrom[tokenId].sub(amount);
 
   if (!contractState[predictedImpact.to]) {
     contractState[predictedImpact.to] = {}
   }
-
   const contractStateTo = contractState[predictedImpact.to];
-
-  const tokenId = predictedImpact.tokenId;
-  const amount = BigNumber.from(1);
-
-  if (!contractStateFrom[tokenId]) {
-    contractStateFrom[tokenId] = BigNumber.from(0);
-  }
-
   if (!contractStateTo[tokenId]) {
     contractStateTo[tokenId] = BigNumber.from(0);
   }
-
-  contractStateFrom[tokenId] = contractStateFrom[tokenId].sub(amount)
-  contractStateTo[tokenId] = contractStateTo[tokenId].add(amount)
+  contractStateTo[tokenId] = contractStateTo[tokenId].add(amount);
 
   return state;
 }

@@ -1,6 +1,6 @@
-import { BigNumber } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { ERC20__factory } from "../../contracts";
-import { ApprovalEventObject, TransferEventObject } from "../../contracts/ERC20";
+import { ApprovalEventObject, TransferEventObject, DepositEventObject, WithdrawalEventObject } from "../../contracts/ERC20";
 import { ContractType } from "../../types/ContractType";
 import { PredictedImpact } from "../../types/PredictedImpact";
 import { TransactionHandler } from "../TransactionHandler";
@@ -30,7 +30,6 @@ export type ERC20PredictedImpact = ERC20Transfer | ERC20Approval;
 export const handleERC20: TransactionHandler = (event) => {
   const predictedImpacts: PredictedImpact[] = [];
   const logDescription = erc20Interface.parseLog(event);
-
   const contractAddress = event.contract.toLowerCase();
 
   switch (logDescription.name) {
@@ -55,6 +54,30 @@ export const handleERC20: TransactionHandler = (event) => {
         owner: approvalEvent.owner.toLowerCase(),
         operator: approvalEvent.spender.toLowerCase(),
         amount: approvalEvent.value.toString(),
+      });
+      break;
+    }
+    case "Deposit": {
+      const depositEvent = logDescription.args as unknown as DepositEventObject
+      predictedImpacts.push({
+        standard: ContractType.ERC20,
+        contract: contractAddress,
+        type: "Transfer",
+        from: constants.AddressZero,
+        to: depositEvent.to.toLowerCase(),
+        amount: depositEvent.value.toString(),
+      });
+      break;
+    }
+    case "Withdrawal": {
+      const withdrawalEvent = logDescription.args as unknown as WithdrawalEventObject
+      predictedImpacts.push({
+        standard: ContractType.ERC20,
+        contract: contractAddress,
+        type: "Transfer",
+        from: withdrawalEvent.from.toLocaleLowerCase(),
+        to: constants.AddressZero,
+        amount: withdrawalEvent.value.toString(),
       });
       break;
     }
