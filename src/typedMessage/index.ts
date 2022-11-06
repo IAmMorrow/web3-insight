@@ -1,5 +1,4 @@
 import { EIP712TypedMessage } from "../types/EIP712";
-import { PredictedImpact } from "../types/PredictedImpact";
 import { TypedMessageHandler } from "./TypedMessageHandler";
 
 // handlers

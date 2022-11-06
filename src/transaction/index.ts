@@ -1,6 +1,6 @@
 import { PredictedImpact } from "../types/PredictedImpact";
 import { TransactionHandler } from "./TransactionHandler";
-import { DebugTraceCallResult, DryRunResult } from "../types/Tracer";
+import { DebugTraceCallResult, DryRunResult, TracerEvent } from "../types/Tracer";
 import { provider } from "../../src/provider";
 
 // handlers
@@ -42,7 +42,7 @@ const handlers: { [assetType: string]: TransactionHandler } = {
 
 export function getPredictedImpactForEvent(
   contractType: ContractType,
-  event: DebugTraceCallResult
+  event: TracerEvent
 ) {
   const predictedImpacts: PredictedImpact[] = [];
 
@@ -148,14 +148,9 @@ type BalancesState = {
 };
 
 export function generateBalanceChanges(
-  transaction: Transaction,
   predictedImpacts: PredictedImpact[]
 ): BalanceChange[] {
   const balanceChanges: BalanceChange[] = [];
-
-  if (!transaction.from) {
-    throw new Error("incomplete transaction");
-  }
 
   // we sort PredictedImpacts by contract address and types
 

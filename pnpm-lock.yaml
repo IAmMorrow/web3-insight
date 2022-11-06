@@ -17,6 +17,7 @@ specifiers:
   typechain: ^8.1.0
   typescript: 4.7.4
   vercel: ^28.1.0
+  zod: ^3.19.1
 
 dependencies:
   '@ethersproject/abi': 5.7.0
@@ -27,6 +28,7 @@ dependencies:
   ajv: 8.11.0
   axios: 0.27.2
   ethers: 5.7.0
+  zod: 3.19.1
 
 devDependencies:
   '@typechain/ethers-v5': 10.1.0_cx2shr4cdlergalx4zvj3gxgsm
@@ -3560,3 +3562,7 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  /zod/3.19.1:
+    resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
+    dev: false
