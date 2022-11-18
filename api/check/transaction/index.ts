@@ -3,11 +3,11 @@ import { Transaction } from "ethers";
 import { getContractMetadata } from "../../../src/contractProber";
 import { provider } from "../../../src/provider";
 import {
-  dryRun,
-  generateBalanceChanges,
-  getContractTypeRegistry,
-  getPredictedImpactForEvent,
-  getUniqueAddresses,
+    dryRun,
+    generateBalanceChanges,
+    getContractTypeRegistry,
+    getPredictedImpactForEvent,
+    getUniqueAddresses,
 } from "../../../src/transaction";
 import { handleNATIVE } from "../../../src/transaction/handlers/NATIVE";
 import { BalanceChange } from "../../../src/types/BalanceChange";
@@ -31,97 +31,97 @@ type CheckTransactionResult = {
 };
 
 export default async function handler(
-  request: VercelRequest,
-  response: VercelResponse
+    request: VercelRequest,
+    response: VercelResponse
 ) {
-  if (request.method === "OPTIONS") {
-    return response.status(200).json({
-      body: "OK",
-    });
-  }
+    if (request.method === "OPTIONS") {
+        return response.status(200).json({
+            body: "OK",
+        });
+    }
 
-  const { transaction, includeContracts, includeEvents } =
+    const { transaction, includeContracts, includeEvents } =
     request.body as CheckTransactionParams;
 
-  try {
-    const { events, calls, gas_used, success, error } = await dryRun(
-      transaction
-    );
-
-    if (!success) {
-      return response.status(200).send({
-        success,
-        error,
-      });
-    }
-
-    const uniqueContractAddresses = getUniqueAddresses(
-      events.map((event) => event.contract)
-    );
-    const contractTypeRegistry = await getContractTypeRegistry(
-      uniqueContractAddresses
-    );
-
-    const eventPredictedImpacts = events
-      .map((event) => {
-        const contractType = contractTypeRegistry[event.contract];
-        if (!contractType) {
-          throw new Error(
-            `No contract type in found in registry for ${event.contract}`
-          );
-        }
-        return getPredictedImpactForEvent(
-          contractTypeRegistry[event.contract],
-          event
+    try {
+        const { events, calls, gas_used, success, error } = await dryRun(
+            transaction
         );
-      })
-      .flat();
 
-    const callPredictedImpacts = calls
-      .map((call) => {
-        return handleNATIVE(call);
-      })
-      .flat();
+        if (!success) {
+            return response.status(200).send({
+                success,
+                error,
+            });
+        }
 
-    const predictedImpacts = [
-      ...eventPredictedImpacts,
-      ...callPredictedImpacts,
-    ];
+        const uniqueContractAddresses = getUniqueAddresses(
+            events.map((event) => event.contract)
+        );
+        const contractTypeRegistry = await getContractTypeRegistry(
+            uniqueContractAddresses
+        );
 
-    const balanceChanges = generateBalanceChanges(
-      predictedImpacts
-    );
+        const eventPredictedImpacts = events
+            .map((event) => {
+                const contractType = contractTypeRegistry[event.contract];
+                if (!contractType) {
+                    throw new Error(
+                        `No contract type in found in registry for ${event.contract}`
+                    );
+                }
+                return getPredictedImpactForEvent(
+                    contractTypeRegistry[event.contract],
+                    event
+                );
+            })
+            .flat();
 
-    const result: CheckTransactionResult = {
-      success,
-      gasUsed: gas_used,
-      balanceChanges,
-    };
+        const callPredictedImpacts = calls
+            .map((call) => {
+                return handleNATIVE(call);
+            })
+            .flat();
 
-    if (includeEvents) {
-      result.events = predictedImpacts;
+        const predictedImpacts = [
+            ...eventPredictedImpacts,
+            ...callPredictedImpacts,
+        ];
+
+        const balanceChanges = generateBalanceChanges(
+            predictedImpacts
+        );
+
+        const result: CheckTransactionResult = {
+            success,
+            gasUsed: gas_used,
+            balanceChanges,
+        };
+
+        if (includeEvents) {
+            result.events = predictedImpacts;
+        }
+
+        if (includeContracts) {
+            const contractMetadatasList = await Promise.all(
+                uniqueContractAddresses.map((contractAddress) =>
+                    getContractMetadata(
+                        contractAddress,
+                        contractTypeRegistry[contractAddress],
+                        provider
+                    )
+                )
+            );
+            result.contracts = contractMetadatasList;
+        }
+
+        return response.status(200).json(result);
+    } catch (error) {
+        console.error("error: ", error);
+
+        if (error instanceof Error) {
+            return response.status(500).send(error);
+        }
+        return response.status(500);
     }
-
-    if (includeContracts) {
-      const contractMetadatasList = await Promise.all(
-        uniqueContractAddresses.map((contractAddress) =>
-          getContractMetadata(
-            contractAddress,
-            contractTypeRegistry[contractAddress],
-            provider
-          )
-        )
-      );
-      result.contracts = contractMetadatasList;
-    }
-
-    return response.status(200).json(result);
-  } catch (error) {
-    console.error("error: ", error);
-
-    if (error instanceof Error) {
-      return response.status(500).send(error);
-    }
-    return response.status(500);
-  }
 }

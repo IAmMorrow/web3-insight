@@ -70,25 +70,27 @@ export function getPredictedImpactForEvent(
 }
 
 export async function dryRun(transaction: Transaction) {
-  if (!process.env.EXPLORER_URL) {
-    throw new Error("env EXPLORER_URL not defined");
-  }
+    if (!process.env.EXPLORER_URL) {
+        throw new Error("env EXPLORER_URL not defined");
+    }
   
-  try {
-    const { data } = await axios.post<DryRunResult>(
-      process.env.EXPLORER_URL,
-      transaction
-    );
-    return data;
-  } catch (error) {
-    if (error instanceof AxiosError && error.response) {
-      return {
-        success: false,
-        error: error.response.data,
-        gas_used: 0,
-        events: [],
-        calls: [],      
-      }
+    try {
+        const { data } = await axios.post<DryRunResult>(
+            process.env.EXPLORER_URL,
+            transaction
+        );
+        return data;
+    } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+            return {
+                success: false,
+                error: error.response.data,
+                gas_used: 0,
+                events: [],
+                calls: [],      
+            };
+        }
+        throw error;
     }
 }
 
