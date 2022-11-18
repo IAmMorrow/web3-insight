@@ -44,7 +44,7 @@ export enum BasicOrderRouteType {
 }
 
 export const MAX_INT = BigNumber.from(
-  "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 );
 export const ONE_HUNDRED_PERCENT_BP = 10000;
 export const NO_CONDUIT =
@@ -52,7 +52,7 @@ export const NO_CONDUIT =
 
 // Supply here any known conduit keys as well as their conduits
 export const KNOWN_CONDUIT_KEYS_TO_CONDUIT = {
-  [OPENSEA_CONDUIT_KEY]: OPENSEA_CONDUIT_ADDRESS,
+    [OPENSEA_CONDUIT_KEY]: OPENSEA_CONDUIT_ADDRESS,
 };
 
 export const CROSS_CHAIN_SEAPORT_ADDRESS =

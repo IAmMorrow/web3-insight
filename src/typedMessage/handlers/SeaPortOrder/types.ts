@@ -1,7 +1,7 @@
 import { AssetType } from "../../../types/Asset";
 
 export const OpenSeaOffer = {
-  assetType: AssetType,
+    assetType: AssetType,
 };
 
 export type Consideration = Offer & {

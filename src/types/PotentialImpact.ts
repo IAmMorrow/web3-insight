@@ -1,8 +1,7 @@
-import { SeaPortOrder } from "../typedMessage/handlers/SeaPort"
+import { SeaPortOrder } from "../typedMessage/handlers/SeaPortOrder";
 
 export type ERC20Permit = {
-    standard: "ERC20",
-    type: "Permit",
+    type: "ERC20Permit",
     contract: string,
     owner: string,
     operator: string,

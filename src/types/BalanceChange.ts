@@ -1,4 +1,4 @@
-import { AssetType } from "./Asset"
+import { AssetType } from "./Asset";
 
 export type ERC20BalanceChange = {
     type: AssetType.ERC20,
