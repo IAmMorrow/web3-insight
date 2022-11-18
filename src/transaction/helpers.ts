@@ -4,6 +4,7 @@ import { InternalError } from "../types/InternalError";
 
 export function hashUnsignedTransaction(transaction: Transaction) {
     const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         from,
         ...tx
     } = transaction;

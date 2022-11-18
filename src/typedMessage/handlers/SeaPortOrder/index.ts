@@ -6,7 +6,6 @@ import { ItemType } from "./constants";
 import { Consideration, Offer } from "./types";
 import { OfferItem, schemaSeaPortOrder } from "./validation";
 import rawType from "./type.json";
-import { InternalError } from "../../../types/InternalError";
 
 export type SeaPortOrder = {
   type: "SeaPortOrder";

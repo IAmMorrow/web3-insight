@@ -26,6 +26,7 @@ export function generateEIP712TypeIdentifier(typeStructure: EIP712Type): string 
 
 export function hashEIP712TypedMessage(typedMessage: EIP712TypedMessage) {
     const {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         EIP712Domain,
         ...types
     } = typedMessage.types;
