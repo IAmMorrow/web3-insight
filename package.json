@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "lint": "next lint",
+    "lint": "eslint ./src",
     "start:dev": "vercel dev",
     "watch:dev": "nodemon --exec 'vercel dev'",
     "typechain": "typechain --target=ethers-v5 --out-dir=./src/contracts ./src/abis/**/*.json",
@@ -13,21 +13,22 @@
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/bytes": "^5.7.0",
     "@ethersproject/hash": "^5.7.0",
-    "@ethersproject/providers": "^5.7.0",
-    "@vercel/node": "^2.5.8",
-    "ajv": "^8.11.0",
+    "@ethersproject/providers": "^5.7.2",
+    "@vercel/node": "^2.6.3",
     "axios": "^0.27.2",
-    "ethers": "^5.7.0",
+    "ethers": "^5.7.2",
     "zod": "^3.19.1"
   },
   "devDependencies": {
-    "@typechain/ethers-v5": "^10.1.0",
+    "@typechain/ethers-v5": "^10.1.1",
     "@types/node": "18.7.9",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/parser": "^5.43.0",
     "eslint": "8.22.0",
     "eslint-config-next": "12.2.5",
-    "nodemon": "^2.0.19",
-    "typechain": "^8.1.0",
+    "nodemon": "^2.0.20",
+    "typechain": "^8.1.1",
     "typescript": "4.7.4",
-    "vercel": "^28.1.0"
+    "vercel": "^28.5.5"
   }
 }

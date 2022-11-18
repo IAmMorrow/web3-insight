@@ -1,28 +1,51 @@
 import { EIP712TypedMessage } from "../types/EIP712";
-import { TypedMessageHandler } from "./TypedMessageHandler";
+import { TypedMessageHandler } from "./types";
+
+import { PotentialImpact } from "../types/PotentialImpact";
+import { generateEIP712TypeIdentifier } from "./helpers";
 
 // handlers
 import { handleEIP2612 } from "./handlers/EIP2612";
-import { handleSeaPort } from "./handlers/SeaPort";
-import { PotentialImpact } from "../types/PotentialImpact";
+import { handleSeaPortOrder } from "./handlers/SeaPortOrder";
+import { handleDAIPermit } from "./handlers/DAIPermit";
+import { z } from "zod";
+import { InternalError } from "../types/InternalError";
 
+const handlers: Record<TypedMessageHandler["identifier"], TypedMessageHandler> =
+  {
+      [handleSeaPortOrder.identifier]: handleSeaPortOrder,
+      [handleEIP2612.identifier]: handleEIP2612,
+      [handleDAIPermit.identifier]: handleDAIPermit,
+  };
 
-const handlers: TypedMessageHandler[] = [
-    handleEIP2612,
-    handleSeaPort,
-]
-
-export function getPotentialImpactForTypedMessage(typedMessage: EIP712TypedMessage) {
+export function getPotentialImpactForTypedMessage(
+    typedMessage: EIP712TypedMessage
+) {
     const potentialImpacts: PotentialImpact[] = [];
 
-    for (let i = 0; i < handlers.length; i++) {
-        const currentHandler = handlers[i];
-        const impacts = currentHandler(typedMessage);
+    const identifier = generateEIP712TypeIdentifier(typedMessage.types);
 
-        if (impacts.length) {
-            potentialImpacts.push(...impacts)
+    const handlerConfig = handlers[identifier];
+
+    if (handlerConfig) {
+        const { handler } = handlerConfig;
+
+        try {
+            const impacts = handler(typedMessage);
+
+            if (impacts.length) {
+                potentialImpacts.push(...impacts);
+            }
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                throw new InternalError("INVALID_EIP712_MESSAGE", `Invalid "${handlerConfig.name}" typed message`, error.flatten());
+            }
+            throw error;
         }
     }
 
-    return potentialImpacts;
+    return {
+        potentialImpacts,
+        type: handlerConfig ? handlerConfig.name : "unknown",
+    };
 }

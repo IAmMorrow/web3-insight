@@ -13,21 +13,21 @@ export type NativeTransfer = {
 export type NativePredictedImpact = NativeTransfer;
 
 export const handleNATIVE = (call: TracerCall) => {
-  const predictedImpacts: NativePredictedImpact[] = [];
+    const predictedImpacts: NativePredictedImpact[] = [];
 
-  const value = BigNumber.from(call.value);
+    const value = BigNumber.from(call.value);
 
-  if (!value.isZero()) {
-    predictedImpacts.push({
-      standard: ContractType.NATIVE,
-      type: "Transfer",
-      from: call.from.toLowerCase(),
-      to: call.to.toLowerCase(),
-      amount: value.toString(),
-    })
-  }
+    if (!value.isZero()) {
+        predictedImpacts.push({
+            standard: ContractType.NATIVE,
+            type: "Transfer",
+            from: call.from.toLowerCase(),
+            to: call.to.toLowerCase(),
+            amount: value.toString(),
+        });
+    }
 
-  return predictedImpacts;
+    return predictedImpacts;
 };
 
 export type NATIVEBalanceChange = {
@@ -35,15 +35,15 @@ export type NATIVEBalanceChange = {
 }
 
 export const computeNATIVEBalanceChange = (state: NATIVEBalanceChange = {}, predictedImpact: NativePredictedImpact) => {
-  if (!state[predictedImpact.from]) {
-    state[predictedImpact.from] = BigNumber.from(0);
-  }
-  state[predictedImpact.from] = state[predictedImpact.from].sub(predictedImpact.amount)
+    if (!state[predictedImpact.from]) {
+        state[predictedImpact.from] = BigNumber.from(0);
+    }
+    state[predictedImpact.from] = state[predictedImpact.from].sub(predictedImpact.amount);
 
-  if (!state[predictedImpact.to]) {
-    state[predictedImpact.to] = BigNumber.from(0);
-  }
-  state[predictedImpact.to] = state[predictedImpact.to].add(predictedImpact.amount)
+    if (!state[predictedImpact.to]) {
+        state[predictedImpact.to] = BigNumber.from(0);
+    }
+    state[predictedImpact.to] = state[predictedImpact.to].add(predictedImpact.amount);
 
-  return state;
-}
+    return state;
+};
