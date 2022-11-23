@@ -1,7 +1,6 @@
 import { PredictedImpact } from "../types/PredictedImpact";
 import { TransactionHandler } from "./TransactionHandler";
 import { DryRunResult, TracerEvent } from "../types/Tracer";
-import { provider } from "../../src/provider";
 
 // handlers
 import {
@@ -22,9 +21,8 @@ import {
     ERC721BalanceChange,
     handleERC721,
 } from "./handlers/ERC721";
-import { ContractType } from "../types/ContractType";
+import { ContractMetadata, ContractType } from "../types/ContractType";
 import { ethers, Transaction } from "ethers";
-import { probeContract } from "../contractProber";
 import { BalanceChange, NFTDelta } from "../types/BalanceChange";
 import { AssetType } from "../types/Asset";
 import axios, { AxiosError } from "axios";
@@ -76,7 +74,7 @@ export async function dryRun(transaction: Transaction) {
   
     try {
         const { data } = await axios.post<DryRunResult>(
-            process.env.EXPLORER_URL,
+            `${process.env.EXPLORER_URL}/blockchain/v4/eth/tx/dryrun?raw=true`,
             transaction
         );
         return data;
@@ -94,19 +92,6 @@ export async function dryRun(transaction: Transaction) {
     }
 }
 
-async function probeContracts(contractAddresses: string[]) {
-    return Promise.all(
-        contractAddresses.map(async (contractAddress) => {
-            const contractType = await probeContract(contractAddress, provider);
-
-            return {
-                contractAddress,
-                contractType,
-            };
-        })
-    );
-}
-
 export function getUniqueAddresses(addresses: string[]) {
     const seenAddresses: { [address: string]: boolean } = {};
 
@@ -117,15 +102,13 @@ export function getUniqueAddresses(addresses: string[]) {
     return Object.keys(seenAddresses);
 }
 
-export async function getContractTypeRegistry(addresses: string[]) {
-    const probedContracts = await probeContracts(addresses);
-
-    return probedContracts.reduce(
+export async function getContractMetadataRegistry(metadatas: ContractMetadata[]) {
+    return metadatas.reduce(
         (
-            acc: { [contractAddress: string]: ContractType },
-            { contractAddress, contractType }
+            acc: { [contractAddress: string]: ContractMetadata },
+            contractMetadata
         ) => {
-            acc[contractAddress] = contractType;
+            acc[contractMetadata.address] = contractMetadata;
             return acc;
         },
         {}
