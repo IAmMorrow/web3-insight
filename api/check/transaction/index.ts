@@ -1,11 +1,10 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Transaction } from "ethers";
-import { getContractMetadata } from "../../../src/contractProber";
-import { provider } from "../../../src/provider";
+import { explorerProber } from "../../../src/contractProber/explorerProber";
 import {
     dryRun,
     generateBalanceChanges,
-    getContractTypeRegistry,
+    getContractMetadataRegistry,
     getPredictedImpactForEvent,
     getUniqueAddresses,
 } from "../../../src/transaction";
@@ -58,20 +57,22 @@ export default async function handler(
         const uniqueContractAddresses = getUniqueAddresses(
             events.map((event) => event.contract)
         );
-        const contractTypeRegistry = await getContractTypeRegistry(
-            uniqueContractAddresses
+
+        const contractMetadatas = await explorerProber(uniqueContractAddresses);
+        const contractTypeRegistry = await getContractMetadataRegistry(
+            contractMetadatas
         );
 
         const eventPredictedImpacts = events
             .map((event) => {
-                const contractType = contractTypeRegistry[event.contract];
-                if (!contractType) {
+                const contractMetadata = contractTypeRegistry[event.contract];
+                if (!contractMetadata) {
                     throw new Error(
-                        `No contract type in found in registry for ${event.contract}`
+                        `No contract metadata in found in registry for ${event.contract}`
                     );
                 }
                 return getPredictedImpactForEvent(
-                    contractTypeRegistry[event.contract],
+                    contractTypeRegistry[event.contract].type,
                     event
                 );
             })
@@ -103,16 +104,7 @@ export default async function handler(
         }
 
         if (includeContracts) {
-            const contractMetadatasList = await Promise.all(
-                uniqueContractAddresses.map((contractAddress) =>
-                    getContractMetadata(
-                        contractAddress,
-                        contractTypeRegistry[contractAddress],
-                        provider
-                    )
-                )
-            );
-            result.contracts = contractMetadatasList;
+            result.contracts = contractMetadatas;
         }
 
         return response.status(200).json(result);
